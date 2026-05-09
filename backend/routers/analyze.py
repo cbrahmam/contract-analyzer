@@ -3,7 +3,8 @@ from pathlib import Path
 
 from fastapi import APIRouter, HTTPException, UploadFile
 
-from backend.models.schemas import UploadResponse
+from backend.models.schemas import AnalysisResult, AnalyzeRequest, UploadResponse
+from backend.services.ai_analyzer import analyze_contract
 from backend.services.pdf_parser import extract_text
 
 router = APIRouter()
@@ -45,3 +46,22 @@ async def upload_document(file: UploadFile) -> UploadResponse:
         page_count=result["page_count"],
         text_preview=result["text"][:500],
     )
+
+
+@router.post("/analyze", response_model=AnalysisResult)
+async def analyze_document(request: AnalyzeRequest) -> AnalysisResult:
+    txt_path = UPLOAD_DIR / f"{request.filename}.txt"
+
+    if not txt_path.exists():
+        raise HTTPException(
+            status_code=404,
+            detail=f"No uploaded document found for '{request.filename}'. Please upload the document first.",
+        )
+
+    text = txt_path.read_text(encoding="utf-8")
+
+    try:
+        return analyze_contract(text)
+    except RuntimeError as e:
+        status = 503 if "not configured" in str(e) else 502
+        raise HTTPException(status_code=status, detail=str(e))
