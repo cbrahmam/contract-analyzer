@@ -1,8 +1,18 @@
 import FileUpload from '../components/FileUpload';
 import UploadProgress from '../components/UploadProgress';
+import { fetchSampleDocument } from '../api/client';
 
-export default function HomePage({ onAnalysisComplete, stage, error, onFileSelect, onRetry }) {
+export default function HomePage({ stage, error, onFileSelect, onRetry }) {
   const isProcessing = stage === 'uploading' || stage === 'analyzing';
+
+  async function handleSample() {
+    try {
+      const file = await fetchSampleDocument();
+      onFileSelect(file);
+    } catch {
+      // Sample fetch failed — ignore silently
+    }
+  }
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-20">
@@ -23,7 +33,17 @@ export default function HomePage({ onAnalysisComplete, stage, error, onFileSelec
       {isProcessing || stage === 'error' ? (
         <UploadProgress stage={stage} error={error} onRetry={onRetry} />
       ) : (
-        <FileUpload onFileSelect={onFileSelect} disabled={isProcessing} />
+        <>
+          <FileUpload onFileSelect={onFileSelect} disabled={isProcessing} />
+          <div className="mt-4 text-center">
+            <button
+              onClick={handleSample}
+              className="text-sm text-slate-500 hover:text-teal-400 transition-colors underline underline-offset-4"
+            >
+              Try with a sample NDA
+            </button>
+          </div>
+        </>
       )}
 
       {!isProcessing && stage !== 'error' && (

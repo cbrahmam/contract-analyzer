@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Layout from './components/Layout';
 import HomePage from './pages/HomePage';
 import ResultsPage from './pages/ResultsPage';
+import ToastContainer from './components/Toast';
 import { uploadDocument, analyzeDocument } from './api/client';
 
 export default function App() {
@@ -55,6 +56,7 @@ export default function App() {
           onReset={handleReset}
         />
       )}
+      <ToastContainer />
     </Layout>
   );
 }

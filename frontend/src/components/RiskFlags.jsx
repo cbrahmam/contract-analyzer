@@ -1,3 +1,5 @@
+import CopyButton from './CopyButton';
+
 const severityOrder = { high: 0, medium: 1, low: 2 };
 const severityColors = {
   high: { border: 'border-red-500/30', bg: 'bg-red-500/5', badge: 'bg-red-500/10 text-red-400 border-red-500/30', icon: 'text-red-400' },
@@ -13,8 +15,9 @@ export default function RiskFlags({ risks }) {
   return (
     <section id="risks" className="animate-fadeIn">
       <div className="rounded-xl border border-navy-700 bg-navy-900/50 overflow-hidden">
-        <div className="p-6 border-b border-navy-800">
+        <div className="p-6 border-b border-navy-800 flex items-center justify-between">
           <h3 className="text-white font-semibold">Risk Flags</h3>
+          <CopyButton text={sorted.map(r => `[${r.severity.toUpperCase()}] ${r.risk}: ${r.description}\nRecommendation: ${r.recommendation}`).join('\n\n')} />
         </div>
         <div className="p-4 space-y-3">
           {sorted.map((r, i) => {

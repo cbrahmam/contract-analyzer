@@ -29,3 +29,10 @@ export async function analyzeDocument(filename) {
 
   return res.json();
 }
+
+export async function fetchSampleDocument() {
+  const res = await fetch('/api/sample');
+  if (!res.ok) throw new Error('Failed to fetch sample document');
+  const blob = await res.blob();
+  return new File([blob], 'sample-nda.pdf', { type: 'application/pdf' });
+}

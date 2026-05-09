@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 
 from fastapi import APIRouter, HTTPException, UploadFile
+from fastapi.responses import FileResponse
 
 from backend.models.schemas import AnalysisResult, AnalyzeRequest, UploadResponse
 from backend.services.ai_analyzer import analyze_contract
@@ -11,6 +12,8 @@ router = APIRouter()
 
 UPLOAD_DIR = Path(__file__).parent.parent / "uploads"
 UPLOAD_DIR.mkdir(exist_ok=True)
+
+SAMPLE_DIR = Path(__file__).parent.parent / "sample_contracts"
 
 ALLOWED_TYPES = {"application/pdf"}
 MAX_FILE_SIZE = 20 * 1024 * 1024  # 20 MB
@@ -65,3 +68,15 @@ async def analyze_document(request: AnalyzeRequest) -> AnalysisResult:
     except RuntimeError as e:
         status = 503 if "not configured" in str(e) else 502
         raise HTTPException(status_code=status, detail=str(e))
+
+
+@router.get("/sample")
+async def get_sample_document():
+    sample_path = SAMPLE_DIR / "sample-nda.pdf"
+    if not sample_path.exists():
+        raise HTTPException(status_code=404, detail="Sample document not found.")
+    return FileResponse(
+        sample_path,
+        media_type="application/pdf",
+        filename="sample-nda.pdf",
+    )

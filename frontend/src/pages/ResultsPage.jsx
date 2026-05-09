@@ -7,6 +7,7 @@ import ObligationsTracker from '../components/ObligationsTracker';
 import RiskFlags from '../components/RiskFlags';
 import KeyDatesTimeline from '../components/KeyDatesTimeline';
 import FinancialTerms from '../components/FinancialTerms';
+import exportPdf from '../utils/exportPdf';
 
 const sectionIds = ['summary', 'terms', 'obligations', 'risks', 'dates', 'financial'];
 
@@ -39,6 +40,18 @@ export default function ResultsPage({ data, filename, onReset }) {
         <ResultsSidebar activeSection={activeSection} />
 
         <div className="flex-1 min-w-0 space-y-6">
+          <div className="flex justify-end">
+            <button
+              onClick={() => exportPdf(data, filename)}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-teal-500/10 hover:bg-teal-500/20 text-teal-400 text-sm font-medium transition-colors border border-teal-500/30"
+            >
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
+              </svg>
+              Download Report
+            </button>
+          </div>
+
           <ExecutiveSummary
             summary={data.executive_summary}
             parties={data.parties}

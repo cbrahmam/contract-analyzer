@@ -1,8 +1,13 @@
+import CopyButton from './CopyButton';
+
 export default function ExecutiveSummary({ summary, parties, riskExplanation }) {
   return (
     <section id="summary" className="space-y-4 animate-fadeIn">
       <div className="rounded-xl border border-navy-700 bg-navy-900/50 p-6">
-        <h3 className="text-white font-semibold mb-3">Executive Summary</h3>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-white font-semibold">Executive Summary</h3>
+          <CopyButton text={summary} />
+        </div>
         <p className="text-slate-300 leading-relaxed">{summary}</p>
       </div>
 
