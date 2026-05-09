@@ -1,27 +1,56 @@
+import { useState, useEffect } from 'react';
+import ResultsHeader from '../components/ResultsHeader';
+import ResultsSidebar from '../components/ResultsSidebar';
+import ExecutiveSummary from '../components/ExecutiveSummary';
+import KeyTermsTable from '../components/KeyTermsTable';
+import ObligationsTracker from '../components/ObligationsTracker';
+import RiskFlags from '../components/RiskFlags';
+import KeyDatesTimeline from '../components/KeyDatesTimeline';
+import FinancialTerms from '../components/FinancialTerms';
+
+const sectionIds = ['summary', 'terms', 'obligations', 'risks', 'dates', 'financial'];
+
 export default function ResultsPage({ data, filename, onReset }) {
+  const [activeSection, setActiveSection] = useState('summary');
+
+  useEffect(() => {
+    function handleScroll() {
+      for (const id of sectionIds) {
+        const el = document.getElementById(id);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top <= 200 && rect.bottom > 200) {
+            setActiveSection(id);
+            break;
+          }
+        }
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    <div className="max-w-4xl mx-auto px-6 py-12">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <span className="inline-block px-3 py-1 rounded-full bg-teal-400/10 text-teal-400 text-sm font-medium mb-2">
-            {data.document_type}
-          </span>
-          <h2 className="text-2xl font-bold text-white">{filename}</h2>
+    <>
+      <ResultsHeader data={data} filename={filename} onReset={onReset} />
+
+      <div className="max-w-6xl mx-auto px-6 py-8 flex gap-8">
+        <ResultsSidebar activeSection={activeSection} />
+
+        <div className="flex-1 min-w-0 space-y-6">
+          <ExecutiveSummary
+            summary={data.executive_summary}
+            parties={data.parties}
+            riskExplanation={data.risk_score_explanation}
+          />
+          <KeyTermsTable terms={data.key_terms} />
+          <ObligationsTracker obligations={data.obligations} />
+          <RiskFlags risks={data.risk_flags} />
+          <KeyDatesTimeline dates={data.key_dates} />
+          <FinancialTerms terms={data.financial_terms} />
         </div>
-        <button
-          onClick={onReset}
-          className="px-4 py-2 rounded-lg bg-navy-800 hover:bg-navy-700 text-slate-300 text-sm font-medium transition-colors"
-        >
-          Upload New Document
-        </button>
       </div>
-
-      <div className="rounded-xl border border-navy-700 bg-navy-900/50 p-6">
-        <h3 className="text-white font-semibold mb-3">Executive Summary</h3>
-        <p className="text-slate-300 leading-relaxed">{data.executive_summary}</p>
-      </div>
-
-      <p className="mt-8 text-center text-slate-500">Full results dashboard coming in Block 4</p>
-    </div>
+    </>
   );
 }
