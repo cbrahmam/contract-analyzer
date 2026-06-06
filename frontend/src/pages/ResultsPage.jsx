@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import ResultsHeader from '../components/ResultsHeader';
 import ResultsSidebar from '../components/ResultsSidebar';
 import ExecutiveSummary from '../components/ExecutiveSummary';
@@ -7,12 +7,18 @@ import ObligationsTracker from '../components/ObligationsTracker';
 import RiskFlags from '../components/RiskFlags';
 import KeyDatesTimeline from '../components/KeyDatesTimeline';
 import FinancialTerms from '../components/FinancialTerms';
+import SearchBar from '../components/SearchBar';
 import exportPdf from '../utils/exportPdf';
 
 const sectionIds = ['summary', 'terms', 'obligations', 'risks', 'dates', 'financial'];
 
+function matchesQuery(text, query) {
+  return text.toLowerCase().includes(query.toLowerCase());
+}
+
 export default function ResultsPage({ data, filename, onReset }) {
   const [activeSection, setActiveSection] = useState('summary');
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     function handleScroll() {
@@ -32,6 +38,23 @@ export default function ResultsPage({ data, filename, onReset }) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const filtered = useMemo(() => {
+    if (!searchQuery) return data;
+    const q = searchQuery;
+    return {
+      ...data,
+      key_terms: data.key_terms.filter(t => matchesQuery(t.term, q) || matchesQuery(t.summary, q)),
+      obligations: data.obligations.filter(o => matchesQuery(o.description, q) || matchesQuery(o.party, q)),
+      risk_flags: data.risk_flags.filter(r => matchesQuery(r.risk, q) || matchesQuery(r.description, q) || matchesQuery(r.recommendation, q)),
+      key_dates: data.key_dates.filter(d => matchesQuery(d.date, q) || matchesQuery(d.description, q)),
+      financial_terms: data.financial_terms.filter(f => matchesQuery(f.item, q) || matchesQuery(f.amount, q) || matchesQuery(f.conditions, q)),
+    };
+  }, [data, searchQuery]);
+
+  const totalResults = searchQuery
+    ? filtered.key_terms.length + filtered.obligations.length + filtered.risk_flags.length + filtered.key_dates.length + filtered.financial_terms.length
+    : null;
+
   return (
     <>
       <ResultsHeader data={data} filename={filename} onReset={onReset} />
@@ -40,10 +63,13 @@ export default function ResultsPage({ data, filename, onReset }) {
         <ResultsSidebar activeSection={activeSection} />
 
         <div className="flex-1 min-w-0 space-y-6">
-          <div className="flex justify-end">
+          <div className="flex items-center gap-4">
+            <div className="flex-1">
+              <SearchBar onSearch={setSearchQuery} />
+            </div>
             <button
               onClick={() => exportPdf(data, filename)}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-teal-500/10 hover:bg-teal-500/20 text-teal-400 text-sm font-medium transition-colors border border-teal-500/30"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-teal-500/10 hover:bg-teal-500/20 text-teal-400 text-sm font-medium transition-colors border border-teal-500/30 shrink-0"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
@@ -52,16 +78,22 @@ export default function ResultsPage({ data, filename, onReset }) {
             </button>
           </div>
 
+          {searchQuery && (
+            <p className="text-sm text-slate-500">
+              {totalResults} result{totalResults !== 1 ? 's' : ''} for "{searchQuery}"
+            </p>
+          )}
+
           <ExecutiveSummary
-            summary={data.executive_summary}
-            parties={data.parties}
-            riskExplanation={data.risk_score_explanation}
+            summary={filtered.executive_summary}
+            parties={filtered.parties}
+            riskExplanation={filtered.risk_score_explanation}
           />
-          <KeyTermsTable terms={data.key_terms} />
-          <ObligationsTracker obligations={data.obligations} />
-          <RiskFlags risks={data.risk_flags} />
-          <KeyDatesTimeline dates={data.key_dates} />
-          <FinancialTerms terms={data.financial_terms} />
+          <KeyTermsTable terms={filtered.key_terms} />
+          <ObligationsTracker obligations={filtered.obligations} />
+          <RiskFlags risks={filtered.risk_flags} />
+          <KeyDatesTimeline dates={filtered.key_dates} />
+          <FinancialTerms terms={filtered.financial_terms} />
         </div>
       </div>
     </>

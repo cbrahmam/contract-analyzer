@@ -58,3 +58,8 @@ class AnalysisResult(BaseModel):
 
 class AnalyzeRequest(BaseModel):
     filename: str
+
+
+class CompareRequest(BaseModel):
+    filename_a: str
+    filename_b: str

@@ -4,8 +4,10 @@ from pathlib import Path
 from fastapi import APIRouter, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 
-from backend.models.schemas import AnalysisResult, AnalyzeRequest, UploadResponse
+from backend.models.schemas import AnalysisResult, AnalyzeRequest, CompareRequest, UploadResponse
 from backend.services.ai_analyzer import analyze_contract
+from backend.services.ai_comparator import compare_contracts
+from backend.services.doc_parser import extract_text_from_docx
 from backend.services.pdf_parser import extract_text
 
 router = APIRouter()
@@ -15,14 +17,17 @@ UPLOAD_DIR.mkdir(exist_ok=True)
 
 SAMPLE_DIR = Path(__file__).parent.parent / "sample_contracts"
 
-ALLOWED_TYPES = {"application/pdf"}
+ALLOWED_TYPES = {
+    "application/pdf",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+}
 MAX_FILE_SIZE = 20 * 1024 * 1024  # 20 MB
 
 
 @router.post("/upload", response_model=UploadResponse)
 async def upload_document(file: UploadFile) -> UploadResponse:
     if file.content_type not in ALLOWED_TYPES:
-        raise HTTPException(status_code=400, detail="Only PDF files are accepted.")
+        raise HTTPException(status_code=400, detail="Only PDF and DOCX files are accepted.")
 
     contents = await file.read()
 
@@ -33,7 +38,10 @@ async def upload_document(file: UploadFile) -> UploadResponse:
         raise HTTPException(status_code=400, detail="Uploaded file is empty.")
 
     try:
-        result = extract_text(contents)
+        if file.content_type == "application/pdf":
+            result = extract_text(contents)
+        else:
+            result = extract_text_from_docx(contents)
     except ValueError as e:
         raise HTTPException(status_code=422, detail=str(e))
 
@@ -65,6 +73,26 @@ async def analyze_document(request: AnalyzeRequest) -> AnalysisResult:
 
     try:
         return analyze_contract(text)
+    except RuntimeError as e:
+        status = 503 if "not configured" in str(e) else 502
+        raise HTTPException(status_code=status, detail=str(e))
+
+
+@router.post("/compare")
+async def compare_documents(request: CompareRequest):
+    txt_a = UPLOAD_DIR / f"{request.filename_a}.txt"
+    txt_b = UPLOAD_DIR / f"{request.filename_b}.txt"
+
+    if not txt_a.exists():
+        raise HTTPException(status_code=404, detail=f"Document A '{request.filename_a}' not found. Upload it first.")
+    if not txt_b.exists():
+        raise HTTPException(status_code=404, detail=f"Document B '{request.filename_b}' not found. Upload it first.")
+
+    text_a = txt_a.read_text(encoding="utf-8")
+    text_b = txt_b.read_text(encoding="utf-8")
+
+    try:
+        return compare_contracts(text_a, text_b)
     except RuntimeError as e:
         status = 503 if "not configured" in str(e) else 502
         raise HTTPException(status_code=status, detail=str(e))

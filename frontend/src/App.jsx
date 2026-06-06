@@ -1,9 +1,13 @@
 import { useState } from 'react';
+import { ThemeProvider } from './context/ThemeContext';
 import Layout from './components/Layout';
 import HomePage from './pages/HomePage';
 import ResultsPage from './pages/ResultsPage';
+import HistoryPage from './pages/HistoryPage';
+import ComparePage from './pages/ComparePage';
 import ToastContainer from './components/Toast';
 import { uploadDocument, analyzeDocument } from './api/client';
+import { addToHistory } from './utils/history';
 
 export default function App() {
   const [page, setPage] = useState('home');
@@ -23,6 +27,7 @@ export default function App() {
       setStage('analyzing');
       const analysisRes = await analyzeDocument(uploadRes.filename);
 
+      addToHistory(uploadRes.filename, analysisRes);
       setResult(analysisRes);
       setPage('results');
       setStage('idle');
@@ -40,23 +45,44 @@ export default function App() {
     setFilename('');
   }
 
+  function handleViewHistoryResult(entry) {
+    setResult(entry.data);
+    setFilename(entry.filename);
+    setPage('results');
+  }
+
   return (
-    <Layout>
-      {page === 'home' ? (
-        <HomePage
-          stage={stage}
-          error={error}
-          onFileSelect={handleFileSelect}
-          onRetry={handleReset}
-        />
-      ) : (
-        <ResultsPage
-          data={result}
-          filename={filename}
-          onReset={handleReset}
-        />
-      )}
-      <ToastContainer />
-    </Layout>
+    <ThemeProvider>
+      <Layout
+        onNavigate={setPage}
+        currentPage={page}
+      >
+        {page === 'home' && (
+          <HomePage
+            stage={stage}
+            error={error}
+            onFileSelect={handleFileSelect}
+            onRetry={handleReset}
+          />
+        )}
+        {page === 'results' && (
+          <ResultsPage
+            data={result}
+            filename={filename}
+            onReset={handleReset}
+          />
+        )}
+        {page === 'history' && (
+          <HistoryPage
+            onViewResult={handleViewHistoryResult}
+            onBack={() => setPage('home')}
+          />
+        )}
+        {page === 'compare' && (
+          <ComparePage onBack={() => setPage('home')} />
+        )}
+        <ToastContainer />
+      </Layout>
+    </ThemeProvider>
   );
 }

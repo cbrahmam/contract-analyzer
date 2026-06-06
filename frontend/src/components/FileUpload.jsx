@@ -12,10 +12,15 @@ export default function FileUpload({ onFileSelect, disabled }) {
   const [error, setError] = useState('');
   const inputRef = useRef(null);
 
+  const ACCEPTED_TYPES = [
+    'application/pdf',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  ];
+
   function handleFile(file) {
     setError('');
-    if (file.type !== 'application/pdf') {
-      setError('Only PDF files are accepted.');
+    if (!ACCEPTED_TYPES.includes(file.type)) {
+      setError('Only PDF and DOCX files are accepted.');
       setSelectedFile(null);
       return;
     }
@@ -72,7 +77,7 @@ export default function FileUpload({ onFileSelect, disabled }) {
         <input
           ref={inputRef}
           type="file"
-          accept=".pdf,application/pdf"
+          accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
           onChange={handleChange}
           className="hidden"
         />
@@ -92,7 +97,7 @@ export default function FileUpload({ onFileSelect, disabled }) {
           ) : (
             <div className="space-y-1">
               <p className="text-slate-300 font-medium">Drop your contract here or click to upload</p>
-              <p className="text-sm text-slate-500">PDF files only, up to 20 MB</p>
+              <p className="text-sm text-slate-500">PDF or DOCX files, up to 20 MB</p>
             </div>
           )}
         </div>
