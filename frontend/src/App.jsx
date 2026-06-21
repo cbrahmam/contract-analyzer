@@ -6,6 +6,7 @@ import HomePage from './pages/HomePage';
 import ResultsPage from './pages/ResultsPage';
 import HistoryPage from './pages/HistoryPage';
 import ComparePage from './pages/ComparePage';
+import StatsPage from './pages/StatsPage';
 import KeyboardShortcutsHelp from './components/KeyboardShortcutsHelp';
 import ToastContainer from './components/Toast';
 import useKeyboardShortcuts from './hooks/useKeyboardShortcuts';
@@ -86,6 +87,9 @@ export default function App() {
         )}
         {page === 'compare' && (
           <ComparePage onBack={() => setPage('home')} />
+        )}
+        {page === 'stats' && (
+          <StatsPage onBack={() => setPage('home')} />
         )}
         <ToastContainer />
         <KeyboardShortcutsHelp />
