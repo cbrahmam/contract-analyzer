@@ -9,6 +9,7 @@ import ComparePage from './pages/ComparePage';
 import StatsPage from './pages/StatsPage';
 import BatchPage from './pages/BatchPage';
 import KeyboardShortcutsHelp from './components/KeyboardShortcutsHelp';
+import ScrollToTop from './components/ScrollToTop';
 import ToastContainer from './components/Toast';
 import useKeyboardShortcuts from './hooks/useKeyboardShortcuts';
 import { uploadDocument, analyzeDocument } from './api/client';
@@ -100,6 +101,7 @@ export default function App() {
         )}
         <ToastContainer />
         <KeyboardShortcutsHelp />
+        <ScrollToTop />
       </Layout>
     </ThemeProvider>
     </ErrorBoundary>
