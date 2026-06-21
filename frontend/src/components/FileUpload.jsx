@@ -60,13 +60,17 @@ export default function FileUpload({ onFileSelect, disabled }) {
   return (
     <div className="w-full max-w-2xl mx-auto">
       <div
+        role="button"
+        tabIndex={0}
+        aria-label="Upload contract file. Accepts PDF and DOCX."
         onClick={() => !disabled && inputRef.current?.click()}
+        onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && !disabled && inputRef.current?.click()}
         onDrop={handleDrop}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         className={`
           relative rounded-2xl border-2 border-dashed p-12 text-center cursor-pointer
-          transition-all duration-300 ease-out
+          transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-teal-400 focus:ring-offset-2 focus:ring-offset-navy-950
           ${dragActive
             ? 'border-teal-400 bg-teal-400/5 scale-[1.02]'
             : 'border-navy-600 bg-navy-900/50 hover:border-navy-500 hover:bg-navy-800/50'
@@ -80,6 +84,7 @@ export default function FileUpload({ onFileSelect, disabled }) {
           accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
           onChange={handleChange}
           className="hidden"
+          aria-label="Select contract file"
         />
 
         <div className="flex flex-col items-center gap-4">
