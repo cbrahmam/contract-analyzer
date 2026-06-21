@@ -7,6 +7,7 @@ import ObligationsTracker from '../components/ObligationsTracker';
 import RiskFlags from '../components/RiskFlags';
 import KeyDatesTimeline from '../components/KeyDatesTimeline';
 import FinancialTerms from '../components/FinancialTerms';
+import NotesPanel from '../components/NotesPanel';
 import SearchBar from '../components/SearchBar';
 import exportPdf from '../utils/exportPdf';
 
@@ -94,6 +95,7 @@ export default function ResultsPage({ data, filename, onReset }) {
           <RiskFlags risks={filtered.risk_flags} />
           <KeyDatesTimeline dates={filtered.key_dates} />
           <FinancialTerms terms={filtered.financial_terms} />
+          <NotesPanel filename={filename} />
         </div>
       </div>
     </>
