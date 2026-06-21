@@ -6,7 +6,9 @@ import HomePage from './pages/HomePage';
 import ResultsPage from './pages/ResultsPage';
 import HistoryPage from './pages/HistoryPage';
 import ComparePage from './pages/ComparePage';
+import KeyboardShortcutsHelp from './components/KeyboardShortcutsHelp';
 import ToastContainer from './components/Toast';
+import useKeyboardShortcuts from './hooks/useKeyboardShortcuts';
 import { uploadDocument, analyzeDocument } from './api/client';
 import { addToHistory } from './utils/history';
 
@@ -16,6 +18,8 @@ export default function App() {
   const [error, setError] = useState('');
   const [result, setResult] = useState(null);
   const [filename, setFilename] = useState('');
+
+  useKeyboardShortcuts(setPage);
 
   async function handleFileSelect(file) {
     setStage('uploading');
@@ -84,6 +88,7 @@ export default function App() {
           <ComparePage onBack={() => setPage('home')} />
         )}
         <ToastContainer />
+        <KeyboardShortcutsHelp />
       </Layout>
     </ThemeProvider>
     </ErrorBoundary>
