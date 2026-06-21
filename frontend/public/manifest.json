@@ -1,0 +1,16 @@
+{
+  "name": "ContractIQ - AI Contract Analyzer",
+  "short_name": "ContractIQ",
+  "description": "AI-powered contract analysis tool that extracts key terms, flags risks, and tracks obligations.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#020617",
+  "theme_color": "#2dd4bf",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
