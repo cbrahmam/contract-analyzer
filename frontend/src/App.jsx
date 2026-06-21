@@ -7,6 +7,7 @@ import ResultsPage from './pages/ResultsPage';
 import HistoryPage from './pages/HistoryPage';
 import ComparePage from './pages/ComparePage';
 import StatsPage from './pages/StatsPage';
+import BatchPage from './pages/BatchPage';
 import KeyboardShortcutsHelp from './components/KeyboardShortcutsHelp';
 import ToastContainer from './components/Toast';
 import useKeyboardShortcuts from './hooks/useKeyboardShortcuts';
@@ -90,6 +91,12 @@ export default function App() {
         )}
         {page === 'stats' && (
           <StatsPage onBack={() => setPage('home')} />
+        )}
+        {page === 'batch' && (
+          <BatchPage
+            onBack={() => setPage('home')}
+            onViewResult={handleViewHistoryResult}
+          />
         )}
         <ToastContainer />
         <KeyboardShortcutsHelp />

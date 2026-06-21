@@ -5,6 +5,7 @@ export default function Header({ onNavigate, currentPage }) {
     { key: 'home', label: 'Analyze' },
     { key: 'compare', label: 'Compare' },
     { key: 'history', label: 'History' },
+    { key: 'batch', label: 'Batch' },
     { key: 'stats', label: 'Analytics' },
   ];
 
