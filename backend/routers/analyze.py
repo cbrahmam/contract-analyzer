@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 
 from fastapi import APIRouter, HTTPException, UploadFile
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 
 from backend.models.schemas import AnalysisResult, AnalyzeRequest, CompareRequest, UploadResponse
 from backend.services.ai_analyzer import analyze_contract
@@ -101,6 +101,22 @@ async def compare_documents(request: CompareRequest):
     except RuntimeError as e:
         status = 503 if "not configured" in str(e) else 502
         raise HTTPException(status_code=status, detail=str(e))
+
+
+@router.get("/documents")
+async def list_uploaded_documents():
+    files = []
+    for path in sorted(UPLOAD_DIR.iterdir()):
+        if path.suffix in (".pdf", ".docx") and path.name != ".gitkeep":
+            txt_path = UPLOAD_DIR / f"{path.name}.txt"
+            word_count = len(txt_path.read_text(encoding="utf-8").split()) if txt_path.exists() else 0
+            files.append({
+                "filename": path.name,
+                "size_bytes": path.stat().st_size,
+                "word_count": word_count,
+                "has_text": txt_path.exists(),
+            })
+    return files
 
 
 @router.get("/sample")
