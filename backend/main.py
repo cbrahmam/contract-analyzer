@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 
 from backend.middleware.logging import RequestLoggingMiddleware
+from backend.middleware.rate_limit import RateLimitMiddleware
 from backend.routers import analyze
 
 load_dotenv()
@@ -13,6 +14,7 @@ load_dotenv()
 app = FastAPI(title="ContractIQ API", version="1.0.0")
 
 app.add_middleware(RequestLoggingMiddleware)
+app.add_middleware(RateLimitMiddleware)
 
 app.add_middleware(
     CORSMiddleware,
