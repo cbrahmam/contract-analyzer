@@ -5,6 +5,8 @@ class UploadResponse(BaseModel):
     filename: str
     page_count: int
     text_preview: str
+    word_count: int
+    reading_time_minutes: int
 
 
 class PartyInfo(BaseModel):

@@ -52,10 +52,15 @@ async def upload_document(file: UploadFile) -> UploadResponse:
     pdf_path.write_bytes(contents)
     txt_path.write_text(result["text"], encoding="utf-8")
 
+    word_count = len(result["text"].split())
+    reading_time = max(1, round(word_count / 200))
+
     return UploadResponse(
         filename=safe_filename,
         page_count=result["page_count"],
         text_preview=result["text"][:500],
+        word_count=word_count,
+        reading_time_minutes=reading_time,
     )
 
 
