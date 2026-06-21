@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ThemeProvider } from './context/ThemeContext';
+import ErrorBoundary from './components/ErrorBoundary';
 import Layout from './components/Layout';
 import HomePage from './pages/HomePage';
 import ResultsPage from './pages/ResultsPage';
@@ -52,6 +53,7 @@ export default function App() {
   }
 
   return (
+    <ErrorBoundary>
     <ThemeProvider>
       <Layout
         onNavigate={setPage}
@@ -84,5 +86,6 @@ export default function App() {
         <ToastContainer />
       </Layout>
     </ThemeProvider>
+    </ErrorBoundary>
   );
 }
