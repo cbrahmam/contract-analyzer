@@ -11,6 +11,7 @@ import BatchPage from './pages/BatchPage';
 import TemplatesPage from './pages/TemplatesPage';
 import DeadlinesPage from './pages/DeadlinesPage';
 import KeyboardShortcutsHelp from './components/KeyboardShortcutsHelp';
+import OnboardingTutorial from './components/OnboardingTutorial';
 import ScrollToTop from './components/ScrollToTop';
 import ToastContainer from './components/Toast';
 import useKeyboardShortcuts from './hooks/useKeyboardShortcuts';
@@ -112,6 +113,7 @@ export default function App() {
         <ToastContainer />
         <KeyboardShortcutsHelp />
         <ScrollToTop />
+        <OnboardingTutorial />
       </Layout>
     </ThemeProvider>
     </ErrorBoundary>
