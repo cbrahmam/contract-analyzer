@@ -8,6 +8,7 @@ export default function Header({ onNavigate, currentPage }) {
     { key: 'home', label: 'Analyze' },
     { key: 'compare', label: 'Compare' },
     { key: 'history', label: 'History' },
+    { key: 'templates', label: 'Templates' },
     { key: 'batch', label: 'Batch' },
     { key: 'stats', label: 'Analytics' },
   ];

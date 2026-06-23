@@ -8,6 +8,7 @@ import HistoryPage from './pages/HistoryPage';
 import ComparePage from './pages/ComparePage';
 import StatsPage from './pages/StatsPage';
 import BatchPage from './pages/BatchPage';
+import TemplatesPage from './pages/TemplatesPage';
 import KeyboardShortcutsHelp from './components/KeyboardShortcutsHelp';
 import ScrollToTop from './components/ScrollToTop';
 import ToastContainer from './components/Toast';
@@ -92,6 +93,9 @@ export default function App() {
         )}
         {page === 'stats' && (
           <StatsPage onBack={() => setPage('home')} />
+        )}
+        {page === 'templates' && (
+          <TemplatesPage onBack={() => setPage('home')} />
         )}
         {page === 'batch' && (
           <BatchPage
