@@ -9,6 +9,7 @@ import KeyDatesTimeline from '../components/KeyDatesTimeline';
 import FinancialTerms from '../components/FinancialTerms';
 import ClauseChecklist from '../components/ClauseChecklist';
 import ContractChat from '../components/ContractChat';
+import FilterSortControls, { applyFiltersAndSort } from '../components/FilterSortControls';
 import NotesPanel from '../components/NotesPanel';
 import SearchBar from '../components/SearchBar';
 import { exportAllCsv } from '../utils/exportCsv';
@@ -23,6 +24,7 @@ function matchesQuery(text, query) {
 export default function ResultsPage({ data, filename, onReset }) {
   const [activeSection, setActiveSection] = useState('summary');
   const [searchQuery, setSearchQuery] = useState('');
+  const [filters, setFilters] = useState({ severity: 'all', priority: 'all', sort: 'default' });
 
   useEffect(() => {
     function handleScroll() {
@@ -54,6 +56,8 @@ export default function ResultsPage({ data, filename, onReset }) {
       financial_terms: data.financial_terms.filter(f => matchesQuery(f.item, q) || matchesQuery(f.amount, q) || matchesQuery(f.conditions, q)),
     };
   }, [data, searchQuery]);
+
+  const finalData = useMemo(() => applyFiltersAndSort(filtered, filters), [filtered, filters]);
 
   const totalResults = searchQuery
     ? filtered.key_terms.length + filtered.obligations.length + filtered.risk_flags.length + filtered.key_dates.length + filtered.financial_terms.length
@@ -91,6 +95,8 @@ export default function ResultsPage({ data, filename, onReset }) {
             </button>
           </div>
 
+          <FilterSortControls filters={filters} onFilterChange={setFilters} />
+
           {searchQuery && (
             <p className="text-sm text-slate-500">
               {totalResults} result{totalResults !== 1 ? 's' : ''} for "{searchQuery}"
@@ -98,15 +104,15 @@ export default function ResultsPage({ data, filename, onReset }) {
           )}
 
           <ExecutiveSummary
-            summary={filtered.executive_summary}
-            parties={filtered.parties}
-            riskExplanation={filtered.risk_score_explanation}
+            summary={finalData.executive_summary}
+            parties={finalData.parties}
+            riskExplanation={finalData.risk_score_explanation}
           />
-          <KeyTermsTable terms={filtered.key_terms} />
-          <ObligationsTracker obligations={filtered.obligations} />
-          <RiskFlags risks={filtered.risk_flags} />
-          <KeyDatesTimeline dates={filtered.key_dates} />
-          <FinancialTerms terms={filtered.financial_terms} />
+          <KeyTermsTable terms={finalData.key_terms} />
+          <ObligationsTracker obligations={finalData.obligations} />
+          <RiskFlags risks={finalData.risk_flags} />
+          <KeyDatesTimeline dates={finalData.key_dates} />
+          <FinancialTerms terms={finalData.financial_terms} />
           <ClauseChecklist documentType={data.document_type} keyTerms={data.key_terms} />
           <NotesPanel filename={filename} />
         </div>
