@@ -8,6 +8,7 @@ import RiskFlags from '../components/RiskFlags';
 import KeyDatesTimeline from '../components/KeyDatesTimeline';
 import FinancialTerms from '../components/FinancialTerms';
 import ClauseChecklist from '../components/ClauseChecklist';
+import ContractChat from '../components/ContractChat';
 import NotesPanel from '../components/NotesPanel';
 import SearchBar from '../components/SearchBar';
 import { exportAllCsv } from '../utils/exportCsv';
@@ -110,6 +111,7 @@ export default function ResultsPage({ data, filename, onReset }) {
           <NotesPanel filename={filename} />
         </div>
       </div>
+      <ContractChat filename={filename} />
     </>
   );
 }
