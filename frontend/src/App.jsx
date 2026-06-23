@@ -9,12 +9,14 @@ import ComparePage from './pages/ComparePage';
 import StatsPage from './pages/StatsPage';
 import BatchPage from './pages/BatchPage';
 import TemplatesPage from './pages/TemplatesPage';
+import DeadlinesPage from './pages/DeadlinesPage';
 import KeyboardShortcutsHelp from './components/KeyboardShortcutsHelp';
 import ScrollToTop from './components/ScrollToTop';
 import ToastContainer from './components/Toast';
 import useKeyboardShortcuts from './hooks/useKeyboardShortcuts';
 import { uploadDocument, analyzeDocument } from './api/client';
 import { addToHistory } from './utils/history';
+import { saveDeadlinesFromAnalysis } from './utils/deadlines';
 
 export default function App() {
   const [page, setPage] = useState('home');
@@ -37,6 +39,7 @@ export default function App() {
       const analysisRes = await analyzeDocument(uploadRes.filename);
 
       addToHistory(uploadRes.filename, analysisRes);
+      saveDeadlinesFromAnalysis(uploadRes.filename, analysisRes);
       setResult(analysisRes);
       setPage('results');
       setStage('idle');
@@ -96,6 +99,9 @@ export default function App() {
         )}
         {page === 'templates' && (
           <TemplatesPage onBack={() => setPage('home')} />
+        )}
+        {page === 'deadlines' && (
+          <DeadlinesPage onBack={() => setPage('home')} />
         )}
         {page === 'batch' && (
           <BatchPage
