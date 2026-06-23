@@ -65,3 +65,14 @@ class AnalyzeRequest(BaseModel):
 class CompareRequest(BaseModel):
     filename_a: str
     filename_b: str
+
+
+class ChatMessage(BaseModel):
+    question: str
+    response: dict
+
+
+class ChatRequest(BaseModel):
+    filename: str
+    question: str
+    history: list[ChatMessage] = []

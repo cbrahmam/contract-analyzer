@@ -4,8 +4,9 @@ from pathlib import Path
 from fastapi import APIRouter, HTTPException, UploadFile
 from fastapi.responses import FileResponse, JSONResponse
 
-from backend.models.schemas import AnalysisResult, AnalyzeRequest, CompareRequest, UploadResponse
+from backend.models.schemas import AnalysisResult, AnalyzeRequest, ChatRequest, CompareRequest, UploadResponse
 from backend.services.ai_analyzer import analyze_contract
+from backend.services.ai_chat import chat_about_contract
 from backend.services.ai_comparator import compare_contracts
 from backend.services.doc_parser import extract_text_from_docx
 from backend.services.pdf_parser import extract_text
@@ -98,6 +99,23 @@ async def compare_documents(request: CompareRequest):
 
     try:
         return compare_contracts(text_a, text_b)
+    except RuntimeError as e:
+        status = 503 if "not configured" in str(e) else 502
+        raise HTTPException(status_code=status, detail=str(e))
+
+
+@router.post("/chat")
+async def chat_with_contract(request: ChatRequest):
+    txt_path = UPLOAD_DIR / f"{request.filename}.txt"
+
+    if not txt_path.exists():
+        raise HTTPException(status_code=404, detail=f"Document '{request.filename}' not found.")
+
+    text = txt_path.read_text(encoding="utf-8")
+    history = [{"question": m.question, "response": m.response} for m in request.history]
+
+    try:
+        return chat_about_contract(text, request.question, history)
     except RuntimeError as e:
         status = 503 if "not configured" in str(e) else 502
         raise HTTPException(status_code=status, detail=str(e))
