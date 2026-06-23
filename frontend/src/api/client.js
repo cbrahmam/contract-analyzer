@@ -45,6 +45,21 @@ export async function compareDocuments(filenameA, filenameB) {
   return res.json();
 }
 
+export async function chatAboutContract(filename, question, history = []) {
+  const res = await fetch('/api/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ filename, question, history }),
+  });
+
+  if (!res.ok) {
+    const error = await res.json();
+    throw new Error(error.detail || 'Chat failed');
+  }
+
+  return res.json();
+}
+
 export async function fetchSampleDocument() {
   const res = await fetch('/api/sample');
   if (!res.ok) throw new Error('Failed to fetch sample document');
