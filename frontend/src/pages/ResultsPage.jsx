@@ -12,6 +12,7 @@ import ContractChat from '../components/ContractChat';
 import FilterSortControls, { applyFiltersAndSort } from '../components/FilterSortControls';
 import GlossaryPanel from '../components/GlossaryPanel';
 import ComplianceChecker from '../components/ComplianceChecker';
+import ObligationCalendar from '../components/ObligationCalendar';
 import NotesPanel from '../components/NotesPanel';
 import SearchBar from '../components/SearchBar';
 import { exportAllCsv } from '../utils/exportCsv';
@@ -116,6 +117,7 @@ export default function ResultsPage({ data, filename, onReset }) {
           <KeyDatesTimeline dates={finalData.key_dates} />
           <FinancialTerms terms={finalData.financial_terms} />
           <ClauseChecklist documentType={data.document_type} keyTerms={data.key_terms} />
+          <ObligationCalendar obligations={finalData.obligations} dates={finalData.key_dates} />
           <ComplianceChecker data={data} />
           <GlossaryPanel data={data} />
           <NotesPanel filename={filename} />
