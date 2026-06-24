@@ -14,6 +14,7 @@ import GlossaryPanel from '../components/GlossaryPanel';
 import ComplianceChecker from '../components/ComplianceChecker';
 import ObligationCalendar from '../components/ObligationCalendar';
 import ExecutiveBrief from '../components/ExecutiveBrief';
+import RedlineDiffViewer from '../components/RedlineDiffViewer';
 import NotesPanel from '../components/NotesPanel';
 import SearchBar from '../components/SearchBar';
 import { exportAllCsv } from '../utils/exportCsv';
@@ -122,6 +123,7 @@ export default function ResultsPage({ data, filename, onReset }) {
           <ComplianceChecker data={data} />
           <GlossaryPanel data={data} />
           <ExecutiveBrief data={data} filename={filename} />
+          <RedlineDiffViewer />
           <NotesPanel filename={filename} />
         </div>
       </div>
