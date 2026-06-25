@@ -18,6 +18,7 @@ import RedlineDiffViewer from '../components/RedlineDiffViewer';
 import RiskHeatmap from '../components/RiskHeatmap';
 import ContractTimeline from '../components/ContractTimeline';
 import AmendmentTracker from '../components/AmendmentTracker';
+import PartyObligationsMatrix from '../components/PartyObligationsMatrix';
 import NotesPanel from '../components/NotesPanel';
 import SearchBar from '../components/SearchBar';
 import { exportAllCsv } from '../utils/exportCsv';
@@ -118,6 +119,7 @@ export default function ResultsPage({ data, filename, onReset }) {
           />
           <KeyTermsTable terms={finalData.key_terms} />
           <ObligationsTracker obligations={finalData.obligations} />
+          <PartyObligationsMatrix obligations={finalData.obligations} parties={finalData.parties} />
           <RiskFlags risks={finalData.risk_flags} />
           <RiskHeatmap risks={finalData.risk_flags} />
           <KeyDatesTimeline dates={finalData.key_dates} />
