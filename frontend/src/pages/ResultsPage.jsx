@@ -17,6 +17,7 @@ import ExecutiveBrief from '../components/ExecutiveBrief';
 import RedlineDiffViewer from '../components/RedlineDiffViewer';
 import RiskHeatmap from '../components/RiskHeatmap';
 import ContractTimeline from '../components/ContractTimeline';
+import AmendmentTracker from '../components/AmendmentTracker';
 import NotesPanel from '../components/NotesPanel';
 import SearchBar from '../components/SearchBar';
 import { exportAllCsv } from '../utils/exportCsv';
@@ -128,6 +129,7 @@ export default function ResultsPage({ data, filename, onReset }) {
           <GlossaryPanel data={data} />
           <ExecutiveBrief data={data} filename={filename} />
           <RedlineDiffViewer />
+          <AmendmentTracker filename={filename} />
           <NotesPanel filename={filename} />
         </div>
       </div>
