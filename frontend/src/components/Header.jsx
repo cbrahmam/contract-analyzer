@@ -10,6 +10,7 @@ export default function Header({ onNavigate, currentPage }) {
     { key: 'history', label: 'History' },
     { key: 'templates', label: 'Templates' },
     { key: 'deadlines', label: 'Deadlines' },
+    { key: 'clauses', label: 'Clauses' },
     { key: 'batch', label: 'Batch' },
     { key: 'stats', label: 'Analytics' },
   ];

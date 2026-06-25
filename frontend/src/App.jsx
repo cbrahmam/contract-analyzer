@@ -10,6 +10,7 @@ import StatsPage from './pages/StatsPage';
 import BatchPage from './pages/BatchPage';
 import TemplatesPage from './pages/TemplatesPage';
 import DeadlinesPage from './pages/DeadlinesPage';
+import ClauseLibraryPage from './pages/ClauseLibraryPage';
 import KeyboardShortcutsHelp from './components/KeyboardShortcutsHelp';
 import OnboardingTutorial from './components/OnboardingTutorial';
 import ScrollToTop from './components/ScrollToTop';
@@ -103,6 +104,9 @@ export default function App() {
         )}
         {page === 'deadlines' && (
           <DeadlinesPage onBack={() => setPage('home')} />
+        )}
+        {page === 'clauses' && (
+          <ClauseLibraryPage onBack={() => setPage('home')} />
         )}
         {page === 'batch' && (
           <BatchPage
