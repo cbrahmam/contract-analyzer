@@ -16,6 +16,7 @@ import ObligationCalendar from '../components/ObligationCalendar';
 import ExecutiveBrief from '../components/ExecutiveBrief';
 import RedlineDiffViewer from '../components/RedlineDiffViewer';
 import RiskHeatmap from '../components/RiskHeatmap';
+import ContractTimeline from '../components/ContractTimeline';
 import NotesPanel from '../components/NotesPanel';
 import SearchBar from '../components/SearchBar';
 import { exportAllCsv } from '../utils/exportCsv';
@@ -121,6 +122,7 @@ export default function ResultsPage({ data, filename, onReset }) {
           <KeyDatesTimeline dates={finalData.key_dates} />
           <FinancialTerms terms={finalData.financial_terms} />
           <ClauseChecklist documentType={data.document_type} keyTerms={data.key_terms} />
+          <ContractTimeline data={finalData} />
           <ObligationCalendar obligations={finalData.obligations} dates={finalData.key_dates} />
           <ComplianceChecker data={data} />
           <GlossaryPanel data={data} />
